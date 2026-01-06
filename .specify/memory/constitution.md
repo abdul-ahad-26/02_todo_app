@@ -2,25 +2,20 @@
 ================================================================================
 SYNC IMPACT REPORT
 ================================================================================
-Version Change: 1.1.0 → 1.2.0 (PATCH - Added mandate for phase-based folders)
+Version Change: 1.2.0 → 1.3.0 (MINOR - PHR recording made optional)
 
 Modified Principles:
-  - III.1. UI Consistency (Expanded with CSS variables)
-  - V. Architectural Principles (Added Event-Driven and Statelessness)
-  - V.3. Phase-Based Project Structure (NEW)
+  - I.3. Knowledge Capture (PHR) (Changed from MUST to SHOULD)
 
-Added Sections:
-  - II. Tech Stack & Evolution Phases
-  - III. Design Theme & Consistency
-  - V.3. Phase-Based Project Structure
+Removed Sections:
+  - VI. Spec-Kit Enforcement Rules - "PHR for Every Input" row removed
 
 Templates Status:
-  - .specify/templates/plan-template.md: ✅ Updated (Added tech stack placeholders)
+  - .specify/templates/plan-template.md: ✅ Compatible
   - .specify/templates/spec-template.md: ✅ Compatible
   - .specify/templates/tasks-template.md: ✅ Compatible
 
-Follow-up TODOs:
-  - Ensure all Phase II+ design implementations use the defined CSS variables.
+Follow-up TODOs: None
 ================================================================================
 -->
 
@@ -58,10 +53,10 @@ All work MUST follow the lifecycle:
 
 ### 3. Knowledge Capture (PHR)
 
-- Every user input MUST result in a Prompt History Record (PHR).
+- Prompt History Records (PHR) SHOULD be created for significant implementation work.
 - Architectural Decision Records (ADR) MUST be suggested for all stack changes or significant design shifts.
 
-**Rationale**: Enables auditable decision tracking and historical context preservation.
+**Rationale**: PHR creation is encouraged but not mandatory. ADR is required for traceability of architectural decisions.
 
 ---
 
@@ -143,7 +138,6 @@ All components from Phase II onwards MUST use a unified "Modern Dark/High-Contra
 |------|-------------|
 | **No Task = No Implementation** | Code cannot be written without a corresponding task |
 | **Verification First** | Use MCP tools and CLI commands for all information gathering |
-| **PHR for Every Input** | Every user message MUST be recorded in a PHR |
 | **ADR for Stack Changes** | Suggest ADR when changing technologies between phases |
 
 ---
@@ -184,4 +178,4 @@ Constitution > Specify > Plan > Tasks > Implementation
 
 ---
 
-**Version**: 1.2.0 | **Ratified**: 2025-12-29 | **Last Amended**: 2026-01-01
+**Version**: 1.3.0 | **Ratified**: 2025-12-29 | **Last Amended**: 2026-01-06

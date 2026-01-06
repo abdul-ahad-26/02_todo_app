@@ -83,7 +83,7 @@ Do not create a new template; always operate on the existing `.specify/memory/co
 
 ---
 
-As the main request completes, you MUST create and complete a PHR (Prompt History Record) using agent‑native tools when possible.
+As the main request completes, you MAY create a Prompt History Record (PHR) for significant constitution amendments. PHR creation is encouraged but not mandatory per the updated constitution.
 
 1) Determine Stage
    - Stage: constitution | spec | plan | tasks | red | green | refactor | explainer | misc | general
