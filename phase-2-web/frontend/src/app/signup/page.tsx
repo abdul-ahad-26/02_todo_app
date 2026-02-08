@@ -3,8 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { signUp } from "@/lib/auth-client";
 
 export default function SignupPage() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -17,22 +19,21 @@ export default function SignupPage() {
     setLoading(true);
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signup`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+      const result = await signUp.email({
+        name,
+        email,
+        password,
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.detail?.message || data.detail || "Signup failed");
+      if (result.error) {
+        throw new Error(result.error.message || "Sign up failed");
       }
 
-      // Success - redirect to signin or auto-login
-      router.push("/signin");
-    } catch (err: any) {
-      setError(err.message);
+      router.push("/tasks");
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : "Sign up failed";
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -41,7 +42,9 @@ export default function SignupPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <div className="w-full max-w-md rounded-lg border border-primary/20 bg-slate-900/50 p-8 shadow-xl backdrop-blur-sm">
-        <h1 className="mb-6 text-3xl font-bold text-foreground">Create Account</h1>
+        <h1 className="mb-6 text-3xl font-bold text-foreground">
+          Create Account
+        </h1>
 
         {error && (
           <div className="mb-4 rounded bg-error/10 p-3 text-sm text-error border border-error/20">
@@ -50,6 +53,20 @@ export default function SignupPage() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="mb-1 block text-sm font-medium text-foreground/70">
+              Full Name
+            </label>
+            <input
+              type="text"
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full rounded border border-primary/30 bg-background px-4 py-2 text-foreground outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+              placeholder="John Doe"
+            />
+          </div>
+
           <div>
             <label className="mb-1 block text-sm font-medium text-foreground/70">
               Email Address
@@ -71,10 +88,11 @@ export default function SignupPage() {
             <input
               type="password"
               required
+              minLength={8}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full rounded border border-primary/30 bg-background px-4 py-2 text-foreground outline-none focus:border-primary focus:ring-1 focus:ring-primary"
-              placeholder="••••••••"
+              placeholder="Min. 8 characters"
             />
           </div>
 

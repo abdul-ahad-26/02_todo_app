@@ -1,121 +1,63 @@
 """
-JWT utilities for authentication and token management.
-"""
-from datetime import datetime, timedelta
-from typing import Optional
-from uuid import UUID
+JWT verification via Better Auth JWKS endpoint.
 
-from jose import JWTError, jwt
+Uses PyJWT with PyJWKClient for Ed25519 (EdDSA) token verification.
+"""
+import jwt
+from jwt import PyJWKClient
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from .config import settings
 
-
 security = HTTPBearer()
 
-
-def create_token(user_id: UUID) -> str:
-    """
-    Create a JWT token for the given user ID.
-
-    Args:
-        user_id: The user's UUID
-
-    Returns:
-        Encoded JWT token string
-    """
-    expiration = datetime.utcnow() + timedelta(
-        hours=settings.jwt_expiration_hours
-    )
-    payload = {
-        "user_id": str(user_id),
-        "exp": expiration,
-    }
-    token = jwt.encode(
-        payload,
-        settings.jwt_secret,
-        algorithm=settings.jwt_algorithm
-    )
-    return token
-
-
-def decode_token(token: str) -> dict:
-    """
-    Decode and verify a JWT token.
-
-    Args:
-        token: The JWT token string
-
-    Returns:
-        Decoded token payload
-
-    Raises:
-        JWTError: If token is invalid or expired
-    """
-    payload = jwt.decode(
-        token,
-        settings.jwt_secret,
-        algorithms=[settings.jwt_algorithm]
-    )
-    return payload
-
-
-def verify_token(token: str) -> Optional[UUID]:
-    """
-    Verify a JWT token and extract the user ID.
-
-    Args:
-        token: The JWT token string
-
-    Returns:
-        User UUID if valid, None otherwise
-    """
-    try:
-        payload = decode_token(token)
-        user_id_str = payload.get("user_id")
-        if user_id_str:
-            return UUID(user_id_str)
-        return None
-    except JWTError:
-        return None
+jwks_client = PyJWKClient(settings.jwks_url)
 
 
 def get_user_id_from_token(
-    credentials: HTTPAuthorizationCredentials = Depends(security)
-) -> UUID:
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+) -> str:
     """
-    FastAPI dependency to extract user_id from Authorization header.
+    FastAPI dependency to verify JWT and extract user_id.
 
-    Args:
-        credentials: HTTP Bearer credentials from security
-
-    Returns:
-        User UUID
-
-    Raises:
-        HTTPException: 401 if token is invalid or missing
+    Returns the user ID (string) from the JWT 'sub' claim.
     """
     token = credentials.credentials
-    user_id = verify_token(token)
 
-    if user_id is None:
+    try:
+        signing_key = jwks_client.get_signing_key_from_jwt(token)
+        payload = jwt.decode(
+            token,
+            signing_key.key,
+            algorithms=["EdDSA"],
+            issuer=settings.jwt_issuer,
+        )
+    except jwt.ExpiredSignatureError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail={
                 "error": "Unauthorized",
-                "message": "Invalid or expired JWT token"
-            }
+                "message": "Token has expired",
+            },
+        )
+    except (jwt.InvalidTokenError, Exception):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={
+                "error": "Unauthorized",
+                "message": "Invalid or expired JWT token",
+            },
+        )
+
+    user_id = payload.get("sub")
+    if not user_id:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={
+                "error": "Unauthorized",
+                "message": "Token missing subject claim",
+            },
         )
 
     return user_id
-
-
-# Export functions for use in tests
-__all__ = [
-    "create_token",
-    "decode_token",
-    "verify_token",
-    "get_user_id_from_token",
-    "security",
-]

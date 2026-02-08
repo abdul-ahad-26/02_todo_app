@@ -2,16 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { apiClient } from "@/lib/api-client";
-
-interface Task {
-  id: string;
-  title: string;
-  description: string;
-  is_complete: boolean;
-}
+import { useSession, signOut } from "@/lib/auth-client";
+import { apiClient, type Task } from "@/lib/api-client";
 
 export default function TasksPage() {
+  const { data: session, isPending } = useSession();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTitle, setNewTitle] = useState("");
   const [newDescription, setNewDescription] = useState("");
@@ -19,24 +14,26 @@ export default function TasksPage() {
   const [editTitle, setEditTitle] = useState("");
   const [editDescription, setEditDescription] = useState("");
   const [loading, setLoading] = useState(true);
-  const [token, setToken] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    if (!storedToken) {
+    if (isPending) return;
+    if (!session) {
       router.push("/signin");
       return;
     }
-    setToken(storedToken);
-    fetchTasks(storedToken);
-  }, []);
+    fetchTasks();
+  }, [session, isPending]);
 
-  const fetchTasks = async (t: string) => {
+  const fetchTasks = async () => {
     try {
-      const data = await apiClient.tasks.list(t);
+      const data = await apiClient.tasks.list();
       setTasks(data);
     } catch (err) {
+      if (err instanceof Error && err.message === "AUTH_REQUIRED") {
+        router.push("/signin");
+        return;
+      }
       console.error(err);
     } finally {
       setLoading(false);
@@ -45,13 +42,13 @@ export default function TasksPage() {
 
   const addTask = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newTitle.trim() || !token) return;
+    if (!newTitle.trim()) return;
 
     try {
-      const newTask = await apiClient.tasks.create(
-        { title: newTitle, description: newDescription },
-        token
-      );
+      const newTask = await apiClient.tasks.create({
+        title: newTitle,
+        description: newDescription || undefined,
+      });
       setTasks([...tasks, newTask]);
       setNewTitle("");
       setNewDescription("");
@@ -61,13 +58,8 @@ export default function TasksPage() {
   };
 
   const toggleTask = async (task: Task) => {
-    if (!token) return;
     try {
-      const updated = await apiClient.tasks.update(
-        task.id,
-        { is_complete: !task.is_complete },
-        token
-      );
+      const updated = await apiClient.tasks.toggleComplete(task.id);
       setTasks(tasks.map((t) => (t.id === task.id ? updated : t)));
     } catch (err) {
       console.error(err);
@@ -81,16 +73,15 @@ export default function TasksPage() {
   };
 
   const saveEdit = async (id: string) => {
-    if (!token || !editTitle.trim()) {
+    if (!editTitle.trim()) {
       setEditingId(null);
       return;
     }
     try {
-      const updated = await apiClient.tasks.update(
-        id,
-        { title: editTitle, description: editDescription },
-        token
-      );
+      const updated = await apiClient.tasks.update(id, {
+        title: editTitle,
+        description: editDescription,
+      });
       setTasks(tasks.map((t) => (t.id === id ? updated : t)));
       setEditingId(null);
     } catch (err) {
@@ -99,16 +90,20 @@ export default function TasksPage() {
   };
 
   const deleteTask = async (id: string) => {
-    if (!token) return;
     try {
-      await apiClient.tasks.delete(id, token);
+      await apiClient.tasks.delete(id);
       setTasks(tasks.filter((t) => t.id !== id));
     } catch (err) {
       console.error(err);
     }
   };
 
-  if (loading) {
+  const handleSignOut = async () => {
+    await signOut();
+    router.push("/signin");
+  };
+
+  if (isPending || loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background text-foreground">
         Loading tasks...
@@ -120,15 +115,19 @@ export default function TasksPage() {
     <div className="min-h-screen bg-background p-4 sm:p-8">
       <div className="mx-auto max-w-2xl">
         <header className="mb-8 flex items-center justify-between">
-          <h1 className="text-3xl font-bold text-foreground">My Tasks</h1>
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">My Tasks</h1>
+            {session?.user?.name && (
+              <p className="text-sm text-foreground/50">
+                {session.user.name}
+              </p>
+            )}
+          </div>
           <button
-            onClick={() => {
-              localStorage.clear();
-              router.push("/signin");
-            }}
+            onClick={handleSignOut}
             className="text-sm text-foreground/60 hover:text-error"
           >
-            Logout
+            Sign Out
           </button>
         </header>
 
@@ -159,7 +158,9 @@ export default function TasksPage() {
 
         <div className="space-y-4">
           {tasks.length === 0 ? (
-            <p className="text-center text-foreground/40">No tasks yet. Add one!</p>
+            <p className="text-center text-foreground/40">
+              No tasks yet. Add one!
+            </p>
           ) : (
             tasks.map((task) => (
               <div
@@ -179,7 +180,9 @@ export default function TasksPage() {
                         type="text"
                         value={editTitle}
                         onChange={(e) => setEditTitle(e.target.value)}
-                        onKeyDown={(e) => e.key === "Enter" && saveEdit(task.id)}
+                        onKeyDown={(e) =>
+                          e.key === "Enter" && saveEdit(task.id)
+                        }
                         autoFocus
                         className="w-full rounded border border-primary/30 bg-slate-900/50 px-2 py-1 text-foreground outline-none focus:border-primary"
                       />
@@ -195,13 +198,17 @@ export default function TasksPage() {
                     <>
                       <h3
                         className={`font-medium ${
-                          task.is_complete ? "text-foreground/40 line-through" : "text-foreground"
+                          task.is_complete
+                            ? "text-foreground/40 line-through"
+                            : "text-foreground"
                         }`}
                       >
                         {task.title}
                       </h3>
                       {task.description && (
-                        <p className="text-sm text-foreground/50">{task.description}</p>
+                        <p className="text-sm text-foreground/50">
+                          {task.description}
+                        </p>
                       )}
                     </>
                   )}

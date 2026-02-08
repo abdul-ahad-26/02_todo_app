@@ -28,7 +28,7 @@ export default function Home() {
       </div>
 
       <footer className="absolute bottom-8 text-foreground/30 text-sm">
-        Phase II • Constitution v1.2.0 • High-Contrast Dark Theme
+        Phase II • Better Auth • High-Contrast Dark Theme
       </footer>
     </div>
   );

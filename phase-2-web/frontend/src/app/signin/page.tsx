@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { signIn } from "@/lib/auth-client";
 
 export default function SigninPage() {
   const [email, setEmail] = useState("");
@@ -17,26 +18,20 @@ export default function SigninPage() {
     setLoading(true);
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signin`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+      const result = await signIn.email({
+        email,
+        password,
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.detail?.message || data.detail || "Signin failed");
+      if (result.error) {
+        throw new Error(result.error.message || "Invalid credentials");
       }
 
-      // Save token
-      localStorage.setItem("token", data.access_token);
-      localStorage.setItem("user", JSON.stringify(data.user));
-
-      // Redirect to tasks
       router.push("/tasks");
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : "Invalid credentials";
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -45,7 +40,9 @@ export default function SigninPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <div className="w-full max-w-md rounded-lg border border-secondary/20 bg-slate-900/50 p-8 shadow-xl backdrop-blur-sm">
-        <h1 className="mb-6 text-3xl font-bold text-foreground">Welcome Back</h1>
+        <h1 className="mb-6 text-3xl font-bold text-foreground">
+          Welcome Back
+        </h1>
 
         {error && (
           <div className="mb-4 rounded bg-error/10 p-3 text-sm text-error border border-error/20">
@@ -78,7 +75,7 @@ export default function SigninPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full rounded border border-secondary/30 bg-background px-4 py-2 text-foreground outline-none focus:border-secondary focus:ring-1 focus:ring-secondary"
-              placeholder="••••••••"
+              placeholder="Min. 8 characters"
             />
           </div>
 
@@ -92,7 +89,7 @@ export default function SigninPage() {
         </form>
 
         <p className="mt-6 text-center text-sm text-foreground/60">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link href="/signup" className="text-primary hover:underline">
             Sign Up
           </Link>

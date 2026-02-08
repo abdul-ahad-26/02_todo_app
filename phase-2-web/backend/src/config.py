@@ -1,9 +1,8 @@
 """
 Backend configuration module.
 
-Loads environment variables for database, JWT, and CORS.
+Loads environment variables for database, JWKS, and CORS.
 """
-import os
 from typing import List, Union
 from pydantic_settings import BaseSettings
 from pydantic import field_validator
@@ -15,10 +14,9 @@ class Settings(BaseSettings):
     # Database
     database_url: str = "sqlite:///./todo.db"
 
-    # JWT
-    jwt_secret: str = "change-me-in-production-at-least-32-characters"
-    jwt_algorithm: str = "HS256"
-    jwt_expiration_hours: int = 24
+    # JWT Verification (Better Auth JWKS)
+    jwks_url: str = "http://localhost:3000/api/auth/jwks"
+    jwt_issuer: str = "http://localhost:3000"
 
     # CORS
     cors_origins: Union[str, List[str]] = ["http://localhost:3000"]

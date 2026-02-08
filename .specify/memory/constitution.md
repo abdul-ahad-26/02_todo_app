@@ -2,86 +2,294 @@
 ================================================================================
 SYNC IMPACT REPORT
 ================================================================================
-Version Change: 1.1.0 → 1.2.0 (PATCH - Added mandate for phase-based folders)
+Version Change: 1.2.0 → 1.3.0 (MINOR - Major technology mandate overhaul)
 
 Modified Principles:
-  - III.1. UI Consistency (Expanded with CSS variables)
-  - V. Architectural Principles (Added Event-Driven and Statelessness)
-  - V.3. Phase-Based Project Structure (NEW)
+  - I. Core Development Philosophy → Removed SDD, PHR, AI-First (handled by SpecKit)
+  - I. replaced with "Hackathon Compliance & Feature Scope"
+  - II. Tech Stack (Expanded with exact versions & packages)
+  - IV. Architectural Principles → Expanded with API, Auth, Security rules
 
 Added Sections:
-  - II. Tech Stack & Evolution Phases
-  - III. Design Theme & Consistency
-  - V.3. Phase-Based Project Structure
+  - I.1. Feature Scope per Phase (Basic, Intermediate, Advanced)
+  - I.2. Deliverables per Phase
+  - II.1-II.5. Exact Package Mandates per Phase
+  - III. Authentication & Security (Better Auth + JWT)
+  - IV.3. API Contract Rules
+  - IV.4. Database & ORM Rules
+  - IV.5. MCP & Agent Architecture Rules
+  - IV.6. Containerization & Orchestration Rules
+  - IV.7. Event-Driven Architecture Rules
+
+Removed Sections:
+  - I.1. Spec-Driven Development Is Mandatory (handled by SpecKit)
+  - I.2. AI-First, Agentic Development (handled by SpecKit)
+  - I.3. Knowledge Capture (PHR) (handled by SpecKit)
+  - VI. Spec-Kit Enforcement Rules (redundant with SpecKit itself)
+  - VII. Agent Behavior Rules (redundant with CLAUDE.md)
 
 Templates Status:
-  - .specify/templates/plan-template.md: ✅ Updated (Added tech stack placeholders)
+  - .specify/templates/plan-template.md: ✅ Compatible (Constitution Check
+    section will reference updated principles automatically)
   - .specify/templates/spec-template.md: ✅ Compatible
   - .specify/templates/tasks-template.md: ✅ Compatible
 
 Follow-up TODOs:
-  - Ensure all Phase II+ design implementations use the defined CSS variables.
+  - Update CLAUDE.md "Active Technologies" section after Phase II+ work.
+  - Create skills for OpenAI ChatKit and OpenAI Agents SDK if not present.
 ================================================================================
 -->
 
 # Hackathon II – Evolution of Todo Constitution
 
-**Purpose**: Define the immutable principles, constraints, and rules governing the entire project lifecycle across all 5 phases of the "Evolution of Todo" hackathon.
+**Purpose**: Define the immutable principles, constraints, and
+non-negotiable rules governing the entire project lifecycle across
+all 5 phases of the "Evolution of Todo" hackathon.
 
-> This Constitution applies globally to all phases (Phase I–V) and is written once.
-
----
-
-## I. Core Development Philosophy
-
-### 1. Spec-Driven Development Is Mandatory
-
-All work MUST follow the lifecycle:
-
-**Constitution → Specify → Plan → Tasks → Implement**
-
-- No implementation may begin until specifications and tasks are complete and approved.
-- No code without a task. No task without a plan.
-- Ambiguity MUST be resolved by refining specifications, never by improvising code.
-- Every implementation must trace to a task.
-- Every task must trace to a specification.
-
-**Rationale**: Ensures deterministic, auditable, and reproducible system evolution.
-
-### 2. AI-First, Agentic Development
-
-- Claude Code is the primary implementation agent.
-- The human acts as system architect and spec author, not a manual coder.
-- No manual code writing; refine specs until Claude Code generates implementation.
-
-**Rationale**: Maximizes consistency and reduces human error in implementation.
-
-### 3. Knowledge Capture (PHR)
-
-- Every user input MUST result in a Prompt History Record (PHR).
-- Architectural Decision Records (ADR) MUST be suggested for all stack changes or significant design shifts.
-
-**Rationale**: Enables auditable decision tracking and historical context preservation.
+> This Constitution applies globally to all phases (Phase I–V)
+> and is written once. It does NOT cover Spec-Driven Development
+> workflow, PHR recording, or agentic tooling — those are managed
+> by SpecKit Plus and CLAUDE.md.
 
 ---
 
-## II. Tech Stack & Evolution Phases
+## I. Hackathon Compliance & Feature Scope
 
-The project evolves through 5 distinct phases with consistency in logic and design.
+### 1. Feature Scope per Phase
 
-| Phase | Description | Tech Stack |
-|-------|-------------|------------|
-| **Phase I** | Console Todo | Python 3.13+, UV (Standard Library Only) |
-| **Phase II** | Web Todo | Next.js 16+, FastAPI, SQLModel, Neon Postgres, Better Auth |
-| **Phase III** | AI-Agentic Todo | OpenAI ChatKit, OpenAI Agents SDK, Official MCP SDK |
-| **Phase IV** | Cloud-Native Todo | Docker, Kubernetes (Minikube), Helm Charts, AIOps |
-| **Phase V** | Distributed Todo | Kafka (Redpanda), Dapr, Azure/GKE/DO Kubernetes |
+Every phase MUST implement the features defined in the hackathon
+document. No features may be skipped or substituted.
+
+**Basic Level (ALL phases MUST include):**
+
+- Add Task (title + description)
+- Delete Task (by ID)
+- Update Task (modify title/description)
+- View Task List (display all tasks with status)
+- Mark as Complete / Incomplete (toggle)
+
+**Intermediate Level (Phase V MUST include):**
+
+- Priorities (high / medium / low)
+- Tags / Categories (work / home / custom labels)
+- Search by keyword
+- Filter by status, priority, or date
+- Sort by due date, priority, or alphabetically
+
+**Advanced Level (Phase V MUST include):**
+
+- Recurring Tasks (auto-reschedule repeating tasks)
+- Due Dates & Time Reminders (with browser notifications)
+
+### 2. Deliverables per Phase
+
+Each phase MUST produce:
+
+| Artifact | Description |
+|----------|-------------|
+| `specs/<feature>/spec.md` | Feature specification |
+| `specs/<feature>/plan.md` | Architecture plan |
+| `specs/<feature>/tasks.md` | Actionable task list |
+| Source code in phase directory | Working implementation |
+| `README.md` update | Setup instructions for the phase |
+
+### 3. No Manual Code
+
+All implementation code MUST be generated via Claude Code from
+specifications. If Claude Code generates incorrect output, the
+specification MUST be refined — not the code manually edited.
 
 ---
 
-## III. Design Theme & Consistency
+## II. Tech Stack Mandates
 
-All components from Phase II onwards MUST use a unified "Modern Dark/High-Contrast" theme defined by central CSS variables.
+The following technology choices are **non-negotiable**. Agents
+MUST NOT substitute, downgrade, or skip any listed technology
+unless a hackathon amendment explicitly permits it.
+
+### 1. Phase I: Console Todo
+
+| Component | Requirement |
+|-----------|-------------|
+| Language | Python 3.13+ |
+| Package Manager | UV |
+| Dependencies | Standard library ONLY (no pip packages) |
+| Storage | In-memory (Python list/dict) |
+
+### 2. Phase II: Full-Stack Web Application
+
+| Component | Requirement |
+|-----------|-------------|
+| Frontend | Next.js 16+ (App Router) |
+| Frontend Language | TypeScript (strict mode) |
+| CSS | Tailwind CSS |
+| Backend | Python FastAPI |
+| ORM | SQLModel |
+| Database | Neon Serverless PostgreSQL |
+| Authentication | Better Auth (with JWT plugin) |
+| Package Manager (Python) | UV |
+| Package Manager (Node) | npm or pnpm |
+
+### 3. Phase III: AI-Powered Chatbot
+
+| Component | Requirement |
+|-----------|-------------|
+| Chat Frontend | OpenAI ChatKit (`@openai/chatkit`) |
+| Chat Backend | ChatKit Python SDK (`chatkit-python`) |
+| AI Framework | OpenAI Agents SDK (`openai-agents`) |
+| MCP Server | Official MCP Python SDK (`mcp`) |
+| MCP Transport | Streamable HTTP via FastMCP |
+| Backend | Python FastAPI (same as Phase II) |
+| Database | Neon Serverless PostgreSQL (same) |
+| Authentication | Better Auth with JWT (same) |
+
+### 4. Phase IV: Local Kubernetes Deployment
+
+| Component | Requirement |
+|-----------|-------------|
+| Containerization | Docker (Dockerfile per service) |
+| Docker AI | Gordon (Docker AI Agent) where available |
+| Orchestration | Kubernetes via Minikube |
+| Package Manager | Helm Charts |
+| AI DevOps | kubectl-ai and/or kagent |
+
+### 5. Phase V: Advanced Cloud Deployment
+
+| Component | Requirement |
+|-----------|-------------|
+| Event Streaming | Apache Kafka (Strimzi on K8s or Redpanda Cloud) |
+| Distributed Runtime | Dapr (Pub/Sub, State, Bindings, Secrets, Service Invocation) |
+| Cloud Provider | Azure AKS / Google GKE / DigitalOcean DOKS / Oracle OKE |
+| CI/CD | GitHub Actions |
+| Monitoring | Configured logging and observability |
+
+---
+
+## III. Authentication & Security
+
+### 1. Better Auth Configuration
+
+- Better Auth MUST be initialized in `lib/auth.ts` with the
+  `nextCookies()` plugin and the `jwt()` plugin.
+- API route handler MUST be at `app/api/auth/[...all]/route.ts`
+  using `toNextJsHandler(auth)`.
+- Client auth MUST use `createAuthClient()` from
+  `better-auth/react`.
+
+### 2. JWT-Based API Security
+
+- All FastAPI endpoints MUST require a valid JWT token in the
+  `Authorization: Bearer <token>` header.
+- The JWT MUST be verified using the shared `BETTER_AUTH_SECRET`
+  environment variable.
+- The backend MUST extract `user_id` from the JWT and enforce
+  that it matches the `{user_id}` path parameter.
+- Requests without a valid token MUST receive 401 Unauthorized.
+- Each user MUST only see and modify their own tasks.
+
+### 3. Secrets Management
+
+- NEVER hardcode secrets, API keys, tokens, or connection strings.
+- All secrets MUST be in `.env` files (excluded from git via
+  `.gitignore`).
+- Provide `.env.example` files documenting required variables.
+- In Phase IV/V, use Kubernetes Secrets or Dapr Secrets store.
+
+### 4. CORS
+
+- Backend MUST configure CORS to allow the frontend origin.
+- In production, CORS MUST NOT use wildcard (`*`) for origins.
+
+---
+
+## IV. Architectural Principles
+
+### 1. Statelessness
+
+- The backend MUST remain stateless. No in-process session
+  storage (except Phase I in-memory by design).
+- From Phase III onwards, conversation state and chat history
+  MUST be persisted exclusively in the database.
+- Any server instance MUST be able to handle any request.
+
+### 2. Event-Driven Evolution (Phase V)
+
+- Phase V MUST use Kafka topics for: `task-events`,
+  `reminders`, `task-updates`.
+- Producers and consumers MUST be decoupled microservices.
+- Dapr Pub/Sub MUST abstract Kafka client code — application
+  code MUST NOT import kafka-python directly when Dapr is
+  available.
+
+### 3. API Contract Rules
+
+- All REST endpoints MUST follow this pattern:
+  - `GET /api/{user_id}/tasks` — List tasks
+  - `POST /api/{user_id}/tasks` — Create task
+  - `GET /api/{user_id}/tasks/{id}` — Get task detail
+  - `PUT /api/{user_id}/tasks/{id}` — Update task
+  - `DELETE /api/{user_id}/tasks/{id}` — Delete task
+  - `PATCH /api/{user_id}/tasks/{id}/complete` — Toggle completion
+- Phase III adds: `POST /api/{user_id}/chat` — Chat endpoint.
+- All endpoints MUST return JSON responses.
+- All endpoints MUST use Pydantic/SQLModel for request/response
+  validation.
+- Errors MUST use `HTTPException` with appropriate status codes.
+
+### 4. Database & ORM Rules
+
+- SQLModel MUST be the ORM for all database operations.
+- Database connection MUST use `DATABASE_URL` environment variable.
+- Neon Serverless PostgreSQL MUST be the database provider.
+- Schema changes MUST be managed via migrations (Alembic or
+  SQLModel create_all for initial setup).
+
+### 5. MCP & Agent Architecture Rules (Phase III+)
+
+- The MCP server MUST be built with the Official MCP Python SDK
+  (`mcp` package) using `FastMCP`.
+- MCP transport MUST be Streamable HTTP.
+- The MCP server MUST expose exactly these tools:
+  `add_task`, `list_tasks`, `complete_task`, `delete_task`,
+  `update_task`.
+- Each MCP tool MUST accept `user_id` as a required parameter.
+- The OpenAI Agents SDK MUST be used for agent logic.
+- The agent MUST connect to the MCP server via
+  `MCPServerStreamableHttp`.
+- Conversation flow MUST be stateless per request:
+  1. Receive message
+  2. Fetch history from DB
+  3. Run agent with MCP tools
+  4. Store response in DB
+  5. Return response
+
+### 6. Containerization & Orchestration (Phase IV+)
+
+- Each service MUST have its own `Dockerfile`.
+- Images MUST use multi-stage builds for production.
+- Helm Charts MUST be used for Kubernetes deployment.
+- All configuration MUST be externalized via ConfigMaps
+  and Secrets.
+- Health check endpoints (`/health`) MUST be implemented
+  for liveness and readiness probes.
+
+### 7. Dapr Integration Rules (Phase V)
+
+- Dapr MUST be used as a sidecar for all services.
+- Application code MUST interact with Kafka, state stores,
+  and secrets exclusively through Dapr HTTP APIs
+  (`http://localhost:3500/v1.0/...`).
+- Dapr components MUST be defined in YAML configuration files.
+- Service-to-service communication MUST use Dapr service
+  invocation for built-in retries and mTLS.
+
+---
+
+## V. Design Theme & Consistency
+
+All components from Phase II onwards MUST use a unified
+"Modern Dark/High-Contrast" theme defined by central CSS
+variables.
 
 ### 1. CSS Palette (Frontend)
 
@@ -94,68 +302,80 @@ All components from Phase II onwards MUST use a unified "Modern Dark/High-Contra
 
 ### 2. Consistency Guarantee
 
-- All components MUST use these variables for colors, spacing, and transitions.
-- All phases MUST look like a single continuous evolution of the same product.
+- All components MUST use these variables for colors, spacing,
+  and transitions.
+- All phases MUST look like a single continuous evolution of the
+  same product.
+- ChatKit UI in Phase III MUST be themed to match these
+  variables.
 
 ---
 
-## IV. Architectural Principles
+## VI. Project Structure
 
-### 1. Statelessness
+### 1. Phase-Based Directories
 
-- The backend remains stateless.
-- From Phase III onwards, chat/agent state is stored exclusively in the database.
+Each phase MUST be contained in its own dedicated top-level
+directory to preserve the history of the evolution.
 
-### 2. Event-Driven Evolution
+Directory naming convention:
+`phase-<N>-<slug>/` (e.g., `phase-1-console/`, `phase-2-web/`)
 
-- Transition to Pub/Sub architecture via Dapr or Kafka in Phase V.
-- Prefer asynchronous communication for distributed components.
+### 2. Monorepo Layout (Phase II+)
 
-### 3. Clean Code & Best Practices
+```text
+phase-2-web/
+├── frontend/          # Next.js 16+ App
+│   ├── CLAUDE.md
+│   ├── src/ or app/
+│   └── ...
+├── backend/           # FastAPI Server
+│   ├── CLAUDE.md
+│   ├── src/ or app/
+│   └── ...
+├── docker-compose.yml
+└── README.md
+```
 
-- Follow Pythonic standards (PEP 8) for all backend code.
-- Adhere to Next.js 16 App Router best practices for the frontend.
+### 3. Specs Organization
+
+```text
+specs/<feature-name>/
+├── spec.md
+├── plan.md
+├── tasks.md
+├── research.md       (optional)
+├── data-model.md     (optional)
+└── contracts/        (optional)
+```
 
 ---
 
-## V. Project Evolution Principles
+## VII. Code Quality
 
-### 1. Progressive Evolution
+### 1. Backend (Python)
 
-- The system evolves incrementally across the defined 5 phases.
-- Each phase MUST build upon the logic of the previous one while introducing new capabilities.
+- Follow PEP 8 and Pythonic standards.
+- Use type hints for all function signatures.
+- Use `async/await` for all I/O operations in FastAPI.
+- Use Pydantic models for all request/response schemas.
 
-### 2. No Premature Complexity
+### 2. Frontend (TypeScript)
 
-- Future-phase concerns MUST NOT influence current-phase design decisions unless specified.
+- TypeScript strict mode MUST be enabled.
+- Use Next.js 16+ App Router patterns (server components
+  by default, client components only for interactivity).
+- All API calls MUST go through a centralized API client
+  (`lib/api.ts` or similar).
+- Use Tailwind CSS — no inline styles.
+
+### 3. Progressive Evolution
+
+- Each phase MUST build upon the logic of the previous phase
+  while introducing new capabilities.
+- Future-phase concerns MUST NOT influence current-phase design
+  unless explicitly specified in the hackathon document.
 - Each phase MUST remain minimal and purpose-driven.
-
-### 3. Phase-Based Project Structure
-
-- Each phase MUST be contained in its own dedicated top-level directory to preserve the history of the evolution.
-- Directory naming convention: `phase-<N>-<slug>/` (e.g., `phase-1-console/`, `phase-2-web/`).
-
----
-
-## VI. Spec-Kit Enforcement Rules
-
-| Rule | Description |
-|------|-------------|
-| **No Task = No Implementation** | Code cannot be written without a corresponding task |
-| **Verification First** | Use MCP tools and CLI commands for all information gathering |
-| **PHR for Every Input** | Every user message MUST be recorded in a PHR |
-| **ADR for Stack Changes** | Suggest ADR when changing technologies between phases |
-
----
-
-## VII. Agent Behavior Rules
-
-AI agents MUST:
-
-1. **Never invent requirements** - All requirements come from specifications.
-2. **Never bypass specifications** - The spec is the source of truth.
-3. **Never implement without tasks** - Tasks authorize implementation.
-4. **Stop and request clarification** - Ambiguity blocks progress.
 
 ---
 
@@ -174,14 +394,20 @@ Constitution > Specify > Plan > Tasks > Implementation
 ### Amendment Procedure
 
 1. Proposed amendments MUST be documented with rationale.
-2. All amendments require version increment per semantic versioning.
-3. **MAJOR**: Backward-incompatible principle changes; **MINOR**: New principles or expanded guidance.
+2. All amendments require version increment per semantic
+   versioning:
+   - **MAJOR**: Backward-incompatible principle removals or
+     redefinitions
+   - **MINOR**: New principles or materially expanded guidance
+   - **PATCH**: Clarifications, wording, typo fixes
 
 ### Compliance Review
 
-- PRs MUST verify compliance with CSS variables and architectural principles.
-- Use of external libraries in Phase I is a blocking violation.
+- PRs MUST verify compliance with tech stack mandates.
+- Use of unauthorized technologies is a blocking violation.
+- CSS variables MUST be verified in frontend PRs.
+- JWT auth MUST be verified in API endpoint PRs.
 
 ---
 
-**Version**: 1.2.0 | **Ratified**: 2025-12-29 | **Last Amended**: 2026-01-01
+**Version**: 1.3.0 | **Ratified**: 2025-12-29 | **Last Amended**: 2026-02-06

@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .config import settings
 from .db import init_db
-from .api import auth, tasks
+from .api import tasks
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -14,8 +14,8 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="Todo API",
-    description="REST API for Todo application with JWT authentication",
-    version="1.0.0",
+    description="REST API for Todo application with Better Auth JWT verification",
+    version="2.0.0",
     lifespan=lifespan
 )
 
@@ -34,5 +34,4 @@ def health_check():
     return {"status": "healthy"}
 
 # Include routers
-app.include_router(auth.router, prefix="/api")
 app.include_router(tasks.router, prefix="/api")
