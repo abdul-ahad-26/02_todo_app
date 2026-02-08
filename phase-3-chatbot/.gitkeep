@@ -1,0 +1,22 @@
+# Phase 3: AI Chatbot - Coming Soon
+
+This directory will contain the AI-powered chatbot implementation.
+
+## Structure (To Be Created)
+
+```
+phase-3-chatbot/
+├── frontend/          # OpenAI ChatKit UI
+├── backend/           # FastAPI + Agents SDK + MCP
+├── specs/             # Feature specifications
+└── docker-compose.yml
+```
+
+## Status
+
+🚧 **In Development** - Due December 21, 2025
+
+## Quick Links
+
+- [Phase 3 Requirements](../HACKATHON.md#phase-iii-todo-ai-chatbot)
+- [GitHub Repository](https://github.com/abdul-ahad-26/02_todo_app)
