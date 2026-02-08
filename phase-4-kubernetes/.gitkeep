@@ -1,0 +1,22 @@
+# Phase 4: Kubernetes Deployment - Coming Soon
+
+This directory will contain Kubernetes deployment configurations.
+
+## Structure (To Be Created)
+
+```
+phase-4-kubernetes/
+├── docker/            # Dockerfiles
+├── k8s/              # Kubernetes manifests
+├── helm/             # Helm charts
+└── README.md
+```
+
+## Status
+
+🚧 **In Development** - Due January 4, 2026
+
+## Quick Links
+
+- [Phase 4 Requirements](../HACKATHON.md#phase-iv-local-kubernetes-deployment)
+- [GitHub Repository](https://github.com/abdul-ahad-26/02_todo_app)
