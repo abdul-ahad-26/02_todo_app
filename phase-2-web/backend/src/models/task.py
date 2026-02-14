@@ -19,7 +19,7 @@ class Task(TaskBase, table=True):
         default_factory=lambda: str(uuid.uuid4()),
         primary_key=True,
     )
-    user_id: str = Field(foreign_key="user.id", index=True, nullable=False)
+    user_id: str = Field(index=True, nullable=False)
     completed: bool = Field(default=False, nullable=False)
     created_at: datetime = Field(
         default_factory=lambda: datetime.now(timezone.utc),

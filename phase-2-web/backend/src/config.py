@@ -23,6 +23,11 @@ class Settings:
     BETTER_AUTH_SECRET: str = field(
         default_factory=lambda: os.environ["BETTER_AUTH_SECRET"]
     )
+    BETTER_AUTH_URL: str = field(
+        default_factory=lambda: os.environ.get(
+            "BETTER_AUTH_URL", "http://localhost:3000"
+        )
+    )
     ALLOWED_ORIGINS: list[str] = field(
         default_factory=lambda: _parse_origins(
             os.environ.get("ALLOWED_ORIGINS", "http://localhost:3000")

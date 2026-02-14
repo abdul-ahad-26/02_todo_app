@@ -3,10 +3,11 @@ name = "todo-api"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.14"
+requires-python = ">=3.13"
 dependencies = [
     "fastapi>=0.128.5",
-    "pyjwt>=2.11.0",
+    "psycopg2-binary>=2.9.11",
+    "pyjwt[crypto]>=2.11.0",
     "python-dotenv>=1.2.1",
     "sqlmodel>=0.0.32",
     "uvicorn>=0.40.0",
