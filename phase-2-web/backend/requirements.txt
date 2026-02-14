@@ -1,16 +1,7 @@
-# FastAPI Web Framework
-fastapi>=0.128.0
+# Auto-synced from pyproject.toml dependencies
+fastapi>=0.128.5
+psycopg2-binary>=2.9.11
+pyjwt[crypto]>=2.11.0
+python-dotenv>=1.2.1
+sqlmodel>=0.0.32
 uvicorn>=0.40.0
-
-# Data Validation
-pydantic>=2.5.0
-pydantic-settings>=2.12.0
-
-# Database
-sqlmodel>=0.0.31
-psycopg2-binary>=2.9.10
-
-# Authentication
-python-jose[cryptography]>=3.5.0
-bcrypt>=4.2.0
-python-multipart>=0.0.6
