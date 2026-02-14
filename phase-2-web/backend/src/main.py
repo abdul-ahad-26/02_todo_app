@@ -1,38 +1,57 @@
-from contextlib import asynccontextmanager
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+"""FastAPI application entry point."""
 
-from .config import settings
-from .db import init_db
-from .api import auth, tasks
+from collections.abc import AsyncGenerator
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from sqlalchemy.exc import OperationalError
+from sqlmodel import SQLModel
+
+from src.config import get_settings
+from src.db import engine
+from src.api.routers.tasks import router as tasks_router
+
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
-    """Initialize database on startup."""
-    init_db()
+async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+    SQLModel.metadata.create_all(engine)
     yield
+
+
+settings = get_settings()
 
 app = FastAPI(
     title="Todo API",
-    description="REST API for Todo application with JWT authentication",
-    version="1.0.0",
-    lifespan=lifespan
+    description="Phase II Full-Stack Todo Application Backend",
+    version="0.1.0",
+    debug=settings.DEBUG,
+    lifespan=lifespan,
 )
 
-# Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins,
+    allow_origins=settings.ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Health check
-@app.get("/health", tags=["System"])
-def health_check():
-    return {"status": "healthy"}
 
-# Include routers
-app.include_router(auth.router, prefix="/api")
-app.include_router(tasks.router, prefix="/api")
+@app.exception_handler(OperationalError)
+async def database_error_handler(
+    request: Request, exc: OperationalError
+) -> JSONResponse:
+    return JSONResponse(
+        status_code=503,
+        content={"detail": "Service temporarily unavailable. Please try again later."},
+    )
+
+
+app.include_router(tasks_router)
+
+
+@app.get("/health")
+def health_check() -> dict[str, str]:
+    return {"status": "healthy"}

@@ -1,26 +1,55 @@
-# Evolution of Todo - Phase 2 Web
+# Phase II: Full-Stack Web Application
 
-This directory contains the full-stack web implementation of the Todo application, featuring a FastAPI backend and a Next.js frontend.
+A multi-user todo application with a Next.js 16+ frontend and Python FastAPI backend.
 
-## Structure
+## Architecture
 
-- `/backend`: FastAPI service using Python 3.13+, managed with `uv`.
-- `/frontend`: Next.js 16+ application styled with the project's high-contrast dark theme.
+- **Frontend**: Next.js 16+ (TypeScript, Tailwind CSS, Better Auth)
+- **Backend**: Python FastAPI (SQLModel, PyJWT, Uvicorn)
+- **Database**: Neon Serverless PostgreSQL
+- **Auth**: Better Auth with JWT plugin (shared secret between frontend and backend)
 
-## Quick Start
+## Setup
 
-To run the entire Phase 2 application, you need to start both the backend and the frontend.
+See [quickstart.md](../specs/005-fullstack-web-app/quickstart.md) for detailed setup instructions.
 
-1. **Backend**: Navigate to `backend/` and follow the instructions in [backend/README.md](./backend/README.md).
-2. **Frontend**: Navigate to `frontend/` and follow the instructions in [frontend/README.md](./frontend/README.md).
+### Quick Start
 
-## Key Features
+1. **Database**: Create a Neon PostgreSQL project at https://console.neon.tech
 
-- **Auth**: Secure JWT-based authentication via Better Auth patterns.
-- **Database**: Neon Serverless PostgreSQL with SQLModel ORM.
-- **UI**: Modern Dark/High-Contrast theme using CSS variables.
-- **Tooling**: `uv` for ultra-fast Python dependency management.
+2. **Backend**:
+   ```bash
+   cd backend
+   cp .env.example .env
+   # Edit .env with your DATABASE_URL and BETTER_AUTH_SECRET
+   uv run uvicorn src.main:app --reload --port 8000
+   ```
 
-## Project Guidelines
+3. **Frontend**:
+   ```bash
+   cd frontend
+   cp .env.local.example .env.local
+   # Edit .env.local with your DATABASE_URL, BETTER_AUTH_SECRET, NEXT_PUBLIC_API_URL
+   npm install
+   npx @better-auth/cli generate
+   npx @better-auth/cli migrate
+   npm run dev
+   ```
 
-This project follows **Spec-Driven Development (SDD)** and the **Project Constitution**. Architecture decisions and specifications can be found in `specs/003-web-todo-update/`.
+4. Open http://localhost:3000
+
+## Environment Variables
+
+**CRITICAL**: `BETTER_AUTH_SECRET` must be identical in both frontend and backend.
+
+### Backend (`backend/.env`)
+- `DATABASE_URL` — Neon PostgreSQL connection string
+- `BETTER_AUTH_SECRET` — Shared secret for JWT verification
+- `ALLOWED_ORIGINS` — CORS allowed origins (e.g., `http://localhost:3000`)
+- `DEBUG` — Enable debug mode
+
+### Frontend (`frontend/.env.local`)
+- `DATABASE_URL` — Neon PostgreSQL connection string
+- `BETTER_AUTH_SECRET` — Shared secret for JWT signing
+- `BETTER_AUTH_URL` — Better Auth base URL
+- `NEXT_PUBLIC_API_URL` — FastAPI backend URL

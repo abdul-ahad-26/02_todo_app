@@ -76,11 +76,11 @@
 
 ### Implementation for User Story 1
 
-- [ ] T024 [P] [US1] Create sign-up form component with email, name, password fields, validation (min 8 chars password), error display, submit handler calling authClient.signUp.email() in `phase-2-web/frontend/src/components/auth/sign-up-form.tsx`
-- [ ] T025 [P] [US1] Create sign-in form component with email, password fields, error display (generic "invalid credentials" message), submit handler calling authClient.signIn.email() in `phase-2-web/frontend/src/components/auth/sign-in-form.tsx`
-- [ ] T026 [US1] Create sign-up page (Client Component) rendering SignUpForm, link to sign-in in `phase-2-web/frontend/src/app/(auth)/sign-up/page.tsx`
-- [ ] T027 [US1] Create sign-in page (Client Component) rendering SignInForm, link to sign-up in `phase-2-web/frontend/src/app/(auth)/sign-in/page.tsx`
-- [ ] T028 [US1] Implement landing page with redirect logic: authenticated users → /dashboard, unauthenticated → /sign-in in `phase-2-web/frontend/src/app/page.tsx`
+- [x] T024 [P] [US1] Create sign-up form component with email, name, password fields, validation (min 8 chars password), error display, submit handler calling authClient.signUp.email() in `phase-2-web/frontend/src/components/auth/sign-up-form.tsx`
+- [x] T025 [P] [US1] Create sign-in form component with email, password fields, error display (generic "invalid credentials" message), submit handler calling authClient.signIn.email() in `phase-2-web/frontend/src/components/auth/sign-in-form.tsx`
+- [x] T026 [US1] Create sign-up page (Client Component) rendering SignUpForm, link to sign-in in `phase-2-web/frontend/src/app/(auth)/sign-up/page.tsx`
+- [x] T027 [US1] Create sign-in page (Client Component) rendering SignInForm, link to sign-up in `phase-2-web/frontend/src/app/(auth)/sign-in/page.tsx`
+- [x] T028 [US1] Implement landing page with redirect logic: authenticated users → /dashboard, unauthenticated → /sign-in in `phase-2-web/frontend/src/app/page.tsx`
 
 **Checkpoint**: User can sign up, sign in, sign out. Session persists. Redirects work. Error messages shown for duplicate email, wrong credentials.
 
@@ -96,11 +96,11 @@
 
 ### Implementation for User Story 2
 
-- [ ] T029 [P] [US2] Create empty-state component showing friendly message when user has no tasks in `phase-2-web/frontend/src/components/tasks/empty-state.tsx`
-- [ ] T030 [P] [US2] Create task-item component displaying task title, completion status (checkbox), creation date, with slots for action buttons in `phase-2-web/frontend/src/components/tasks/task-item.tsx`
-- [ ] T031 [US2] Create task-list component fetching tasks from API via lib/api.ts, rendering task-item for each task or empty-state when none in `phase-2-web/frontend/src/components/tasks/task-list.tsx`
-- [ ] T032 [US2] Create dashboard layout with nav bar, user name display, sign-out button in `phase-2-web/frontend/src/app/dashboard/layout.tsx`
-- [ ] T033 [US2] Create dashboard page composing task-list component, loading state, error handling in `phase-2-web/frontend/src/app/dashboard/page.tsx`
+- [x] T029 [P] [US2] Create empty-state component showing friendly message when user has no tasks in `phase-2-web/frontend/src/components/tasks/empty-state.tsx`
+- [x] T030 [P] [US2] Create task-item component displaying task title, completion status (checkbox), creation date, with slots for action buttons in `phase-2-web/frontend/src/components/tasks/task-item.tsx`
+- [x] T031 [US2] Create task-list component fetching tasks from API via lib/api.ts, rendering task-item for each task or empty-state when none in `phase-2-web/frontend/src/components/tasks/task-list.tsx`
+- [x] T032 [US2] Create dashboard layout with nav bar, user name display, sign-out button in `phase-2-web/frontend/src/app/dashboard/layout.tsx`
+- [x] T033 [US2] Create dashboard page composing task-list component, loading state, error handling in `phase-2-web/frontend/src/app/dashboard/page.tsx`
 
 **Checkpoint**: Dashboard displays all user tasks. Empty state shown for new users. Unauthenticated access redirects to sign-in. Loading state displayed while fetching.
 
@@ -116,8 +116,8 @@
 
 ### Implementation for User Story 3
 
-- [ ] T034 [US3] Create task-form component with title input (required, 1-200 chars), description textarea (optional, max 1000 chars), client-side validation, submit/cancel buttons, calling POST /api/{user_id}/tasks via lib/api.ts in `phase-2-web/frontend/src/components/tasks/task-form.tsx`
-- [ ] T035 [US3] Integrate task-form into dashboard page with "Add Task" button that shows/hides the form, refresh task list on successful creation in `phase-2-web/frontend/src/app/dashboard/page.tsx`
+- [x] T034 [US3] Create task-form component with title input (required, 1-200 chars), description textarea (optional, max 1000 chars), client-side validation, submit/cancel buttons, calling POST /api/{user_id}/tasks via lib/api.ts in `phase-2-web/frontend/src/components/tasks/task-form.tsx`
+- [x] T035 [US3] Integrate task-form into dashboard page with "Add Task" button that shows/hides the form, refresh task list on successful creation in `phase-2-web/frontend/src/app/dashboard/page.tsx`
 
 **Checkpoint**: Users can create tasks with validation. New tasks appear in list immediately. Success/error feedback shown.
 
@@ -133,7 +133,7 @@
 
 ### Implementation for User Story 4
 
-- [ ] T036 [US4] Add toggle-complete click handler to task-item component calling PATCH /api/{user_id}/tasks/{id}/complete via lib/api.ts, update local state optimistically, show error on failure in `phase-2-web/frontend/src/components/tasks/task-item.tsx`
+- [x] T036 [US4] Add toggle-complete click handler to task-item component calling PATCH /api/{user_id}/tasks/{id}/complete via lib/api.ts, update local state optimistically, show error on failure in `phase-2-web/frontend/src/components/tasks/task-item.tsx`
 
 **Checkpoint**: Clicking checkbox toggles completion. Visual indicator (checkbox, strikethrough) updates. Status persists on refresh.
 
@@ -149,8 +149,8 @@
 
 ### Implementation for User Story 5
 
-- [ ] T037 [US5] Add edit mode to task-form component: accept optional initial values (title, description) for pre-filling, call PUT /api/{user_id}/tasks/{id} on submit instead of POST, handle cancel in `phase-2-web/frontend/src/components/tasks/task-form.tsx`
-- [ ] T038 [US5] Add edit button to task-item component that shows inline task-form with pre-filled values, refresh task list on successful update in `phase-2-web/frontend/src/components/tasks/task-item.tsx`
+- [x] T037 [US5] Add edit mode to task-form component: accept optional initial values (title, description) for pre-filling, call PUT /api/{user_id}/tasks/{id} on submit instead of POST, handle cancel in `phase-2-web/frontend/src/components/tasks/task-form.tsx`
+- [x] T038 [US5] Add edit button to task-item component that shows inline task-form with pre-filled values, refresh task list on successful update in `phase-2-web/frontend/src/components/tasks/task-item.tsx`
 
 **Checkpoint**: Edit button opens form with current values. Save updates task. Cancel discards changes. Validation prevents blank title.
 
@@ -166,7 +166,7 @@
 
 ### Implementation for User Story 6
 
-- [ ] T039 [US6] Add delete button to task-item component with confirmation prompt (confirm/cancel), calling DELETE /api/{user_id}/tasks/{id} via lib/api.ts, remove task from list on success, show error on failure in `phase-2-web/frontend/src/components/tasks/task-item.tsx`
+- [x] T039 [US6] Add delete button to task-item component with confirmation prompt (confirm/cancel), calling DELETE /api/{user_id}/tasks/{id} via lib/api.ts, remove task from list on success, show error on failure in `phase-2-web/frontend/src/components/tasks/task-item.tsx`
 
 **Checkpoint**: Delete button shows confirmation. Confirmed deletion removes task permanently. Cancel preserves task.
 
@@ -176,12 +176,12 @@
 
 **Purpose**: Responsive design, accessibility, error edge cases, final validation
 
-- [ ] T040 [P] Ensure responsive layout works from 375px to 1920px: test sign-in, sign-up, dashboard pages with mobile-first Tailwind breakpoints in `phase-2-web/frontend/src/`
-- [ ] T041 [P] Add loading spinners/skeletons for API calls (task list fetch, form submissions) across dashboard components in `phase-2-web/frontend/src/components/tasks/`
-- [ ] T042 [P] Handle session expiry edge case: detect 401 responses in API client, redirect to /sign-in with "session expired" message in `phase-2-web/frontend/src/lib/api.ts`
-- [ ] T043 [P] Handle database unavailability: show user-friendly error without exposing technical details in `phase-2-web/backend/src/main.py`
-- [ ] T044 Validate full-stack flow per quickstart.md Section 7: sign up, create task, toggle, refresh, sign out, sign in as different user, verify data isolation
-- [ ] T045 [P] Sanitize task title/description inputs to prevent XSS — ensure React's default escaping is active, validate no raw HTML rendering in `phase-2-web/frontend/src/components/tasks/`
+- [x] T040 [P] Ensure responsive layout works from 375px to 1920px: test sign-in, sign-up, dashboard pages with mobile-first Tailwind breakpoints in `phase-2-web/frontend/src/`
+- [x] T041 [P] Add loading spinners/skeletons for API calls (task list fetch, form submissions) across dashboard components in `phase-2-web/frontend/src/components/tasks/`
+- [x] T042 [P] Handle session expiry edge case: detect 401 responses in API client, redirect to /sign-in with "session expired" message in `phase-2-web/frontend/src/lib/api.ts`
+- [x] T043 [P] Handle database unavailability: show user-friendly error without exposing technical details in `phase-2-web/backend/src/main.py`
+- [x] T044 Validate full-stack flow per quickstart.md Section 7: sign up, create task, toggle, refresh, sign out, sign in as different user, verify data isolation
+- [x] T045 [P] Sanitize task title/description inputs to prevent XSS — ensure React's default escaping is active, validate no raw HTML rendering in `phase-2-web/frontend/src/components/tasks/`
 
 **Checkpoint**: Application works end-to-end on mobile and desktop. Edge cases handled gracefully. All 7 verification steps from quickstart.md pass.
 

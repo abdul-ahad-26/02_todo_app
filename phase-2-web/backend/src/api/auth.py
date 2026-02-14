@@ -1,64 +1,65 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlmodel import Session, select
-from ..db import get_session
-from ..models import User, UserCreate, UserPublic
-from ..auth import create_token
+"""JWT verification dependency using Better Auth JWKS (EdDSA)."""
 
-router = APIRouter(prefix="/auth", tags=["Authentication"])
+import jwt
+from jwt import PyJWKClient
+from fastapi import Depends, HTTPException, status
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
-@router.post("/signup", status_code=status.HTTP_201_CREATED, response_model=UserPublic)
-def signup(user_data: UserCreate, session: Session = Depends(get_session)) -> UserPublic:
-    """
-    Register a new user.
-    """
-    # Check if email already exists
-    existing_user = session.exec(
-        select(User).where(User.email == user_data.email)
-    ).first()
+from src.config import get_settings
 
-    if existing_user:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail={
-                "error": "Bad Request",
-                "message": "Email already registered"
-            }
+security = HTTPBearer()
+
+_jwks_client: PyJWKClient | None = None
+
+
+def _get_jwks_client() -> PyJWKClient:
+    global _jwks_client
+    if _jwks_client is None:
+        settings = get_settings()
+        _jwks_client = PyJWKClient(
+            f"{settings.BETTER_AUTH_URL}/api/auth/jwks",
+            cache_keys=True,
         )
+    return _jwks_client
 
-    # Create new user
-    user = User(email=user_data.email)
-    user.set_password(user_data.password)
 
-    session.add(user)
-    session.commit()
-    session.refresh(user)
-
-    return user
-
-@router.post("/signin")
-def signin(user_data: UserCreate, session: Session = Depends(get_session)) -> dict:
-    """
-    Sign in existing user.
-    """
-    # Find user by email
-    user = session.exec(
-        select(User).where(User.email == user_data.email)
-    ).first()
-
-    if not user or not user.verify_password(user_data.password):
+def verify_jwt_token(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+) -> dict:
+    token = credentials.credentials
+    settings = get_settings()
+    try:
+        signing_key = _get_jwks_client().get_signing_key_from_jwt(token)
+        payload = jwt.decode(
+            token,
+            signing_key.key,
+            algorithms=["EdDSA"],
+            issuer=settings.BETTER_AUTH_URL,
+            options={"verify_aud": False},
+        )
+    except jwt.ExpiredSignatureError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail={
-                "error": "Unauthorized",
-                "message": "Invalid email or password"
-            }
+            detail="Token has expired.",
+        )
+    except jwt.InvalidTokenError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid authentication token.",
         )
 
-    # Create and return JWT token
-    token = create_token(user.id)
+    if "sub" not in payload:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token missing required 'sub' claim.",
+        )
 
-    return {
-        "access_token": token,
-        "token_type": "bearer",
-        "user": UserPublic(id=user.id, email=user.email, created_at=user.created_at)
-    }
+    return payload
+
+
+def verify_user_access(user_id: str, payload: dict) -> None:
+    if payload.get("sub") != user_id:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User ID mismatch. Access denied.",
+        )

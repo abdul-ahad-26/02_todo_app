@@ -1,29 +1,16 @@
-"""
-Database connection and session management.
+"""Database engine and session dependency."""
 
-Uses SQLModel with PostgreSQL via Neon.
-"""
-from typing import Generator
-from sqlmodel import create_engine, Session, SQLModel
-from .config import settings
+from collections.abc import Generator
 
+from sqlmodel import Session, create_engine
 
-engine = create_engine(
-    settings.database_url,
-    echo=True,  # Enable SQL logging for development
-)
+from src.config import get_settings
 
+settings = get_settings()
 
-def init_db() -> None:
-    """Create all database tables if they don't exist."""
-    SQLModel.metadata.create_all(engine)
+engine = create_engine(settings.DATABASE_URL, pool_pre_ping=True)
 
 
 def get_session() -> Generator[Session, None, None]:
-    """
-    Dependency for FastAPI routes.
-
-    Yields a database session and ensures it's closed after use.
-    """
     with Session(engine) as session:
         yield session
