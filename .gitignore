@@ -54,3 +54,13 @@ Thumbs.db
 # Local configuration
 .env.local
 .env.*.local
+
+# Node.js
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+
+# Temporary
+*.tmp

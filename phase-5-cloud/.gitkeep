@@ -1,0 +1,23 @@
+# Phase 5: Cloud Deployment - Coming Soon
+
+This directory will contain cloud deployment configurations with Kafka and Dapr.
+
+## Structure (To Be Created)
+
+```
+phase-5-cloud/
+├── services/          # Microservices
+├── k8s/              # Kubernetes manifests
+├── helm/             # Helm charts
+├── .github/          # CI/CD workflows
+└── kafka/            # Kafka configs
+```
+
+## Status
+
+🚧 **In Development** - Due January 18, 2026
+
+## Quick Links
+
+- [Phase 5 Requirements](../HACKATHON.md#phase-v-advanced-cloud-deployment)
+- [GitHub Repository](https://github.com/abdul-ahad-26/02_todo_app)

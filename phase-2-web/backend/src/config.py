@@ -1,40 +1,43 @@
-"""
-Backend configuration module.
+"""Application settings loaded from environment variables."""
 
-Loads environment variables for database, JWT, and CORS.
-"""
 import os
-from typing import List, Union
-from pydantic_settings import BaseSettings
-from pydantic import field_validator
+from dataclasses import dataclass, field
+from functools import lru_cache
+
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
-class Settings(BaseSettings):
-    """Application settings loaded from environment variables."""
-
-    # Database
-    database_url: str = "sqlite:///./todo.db"
-
-    # JWT
-    jwt_secret: str = "change-me-in-production-at-least-32-characters"
-    jwt_algorithm: str = "HS256"
-    jwt_expiration_hours: int = 24
-
-    # CORS
-    cors_origins: Union[str, List[str]] = ["http://localhost:3000"]
-
-    @field_validator("cors_origins", mode="before")
-    @classmethod
-    def assemble_cors_origins(cls, v: Union[str, List[str]]) -> List[str]:
-        if isinstance(v, str) and not v.startswith("["):
-            return [i.strip() for i in v.split(",")]
-        return v
-
-    model_config = {
-        "env_file": ".env",
-        "case_sensitive": False,
-        "extra": "ignore"
-    }
+def _parse_bool(value: str) -> bool:
+    return value.strip().lower() in ("true", "1", "yes")
 
 
-settings = Settings()
+def _parse_origins(value: str) -> list[str]:
+    return [origin.strip() for origin in value.split(",") if origin.strip()]
+
+
+@dataclass(frozen=True)
+class Settings:
+    DATABASE_URL: str = field(default_factory=lambda: os.environ["DATABASE_URL"])
+    BETTER_AUTH_SECRET: str = field(
+        default_factory=lambda: os.environ["BETTER_AUTH_SECRET"]
+    )
+    BETTER_AUTH_URL: str = field(
+        default_factory=lambda: os.environ.get(
+            "BETTER_AUTH_URL", "http://localhost:3000"
+        )
+    )
+    ALLOWED_ORIGINS: list[str] = field(
+        default_factory=lambda: _parse_origins(
+            os.environ.get("ALLOWED_ORIGINS", "http://localhost:3000")
+        )
+    )
+    DEBUG: bool = field(
+        default_factory=lambda: _parse_bool(os.environ.get("DEBUG", "false"))
+    )
+
+
+@lru_cache(maxsize=1)
+def get_settings() -> Settings:
+    return Settings()
