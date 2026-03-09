@@ -31,8 +31,6 @@ See [quickstart.md](../specs/005-fullstack-web-app/quickstart.md) for detailed s
    cp .env.local.example .env.local
    # Edit .env.local with your DATABASE_URL, BETTER_AUTH_SECRET, NEXT_PUBLIC_API_URL
    npm install
-   npx @better-auth/cli generate
-   npx @better-auth/cli migrate
    npm run dev
    ```
 
@@ -46,6 +44,7 @@ See [quickstart.md](../specs/005-fullstack-web-app/quickstart.md) for detailed s
 - `DATABASE_URL` — Neon PostgreSQL connection string
 - `BETTER_AUTH_SECRET` — Shared secret for JWT verification
 - `ALLOWED_ORIGINS` — CORS allowed origins (e.g., `http://localhost:3000`)
+- `BETTER_AUTH_URL` — Better Auth base URL (default: `http://localhost:3000`)
 - `DEBUG` — Enable debug mode
 
 ### Frontend (`frontend/.env.local`)

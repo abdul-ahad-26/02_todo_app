@@ -7,7 +7,7 @@ This is the Next.js 16+ frontend for the Phase II Full-Stack Todo Application.
 - Next.js 16+ with App Router
 - TypeScript (strict mode)
 - Tailwind CSS with CSS variable theme
-- Better Auth (JWT plugin + nextCookies plugin)
+- Better Auth (JWT plugin)
 
 ## Key Patterns
 - Server Components by default, Client Components for interactivity
